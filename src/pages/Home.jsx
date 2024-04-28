@@ -3,6 +3,7 @@ import { useState } from 'react';
 import thumnail from "../assets/t2.jpg";
 import shigure_ui from "../assets/shigure-ui.gif";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip } from '@chakra-ui/react';
+import donateGif from "../assets/donate.gif";
 
 function Home(){
     const [isPlaying, setIsPlaying] = useState(false);
@@ -14,7 +15,7 @@ function Home(){
 
     return (
         <>
-            <div className="container mx-auto">
+            <div className="container mx-auto flex flex-col relative">
                 <div className="flex flex-col min-h-screen justify-center items-center p-10 md:px-28 ">
                     <div className="flex flex-col w-full gap-3 relative">
                         {/* Img */}
@@ -95,7 +96,7 @@ function Home(){
                                 }
                                 
                             </div>
-                            <div className='w-52 justify-center items-center hidden md:flex md:ml-8 hover:cursor-pointer'>
+                            <div className='w-52 justify-center items-center hidden lg:flex md:ml-8 hover:cursor-pointer'>
                                 <a>
                                     <img src={thumnail} className='w-auto rounded-lg' />
                                 </a>
@@ -114,6 +115,9 @@ function Home(){
                         </div>
                     </div>
                 </div>
+                <a className="absolute bottom-0 right-0 px-0 h-40 hover:cursor-pointer" >
+                    <img src={donateGif} className='hidden md:flex' />
+                </a>
             </div>
         </>
     );

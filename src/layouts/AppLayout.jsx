@@ -13,8 +13,9 @@ function AppLayout({ children }){
             {/* App Page Chidren */}
             {React.Children.map(children, (child) =>{
                 return React.cloneElement(child, { 
+                    
                 });
-            })}
+            })}     
         </>
     );
 }

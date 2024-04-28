@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Itim&family=Josefin+Sans&family=Playpen+Sans&family=Prompt&family=Sriracha&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Mali&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Itim&family=Josefin+Sans&family=Playpen+Sans&family=Prompt&family=Sriracha&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mali&display=swap'); */
 
 * {
-	font-family: 'Itim', cursive;
+	font-family: "Nunito", sans-serif;
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
 	/* font-family: 'Mali', cursive; */
 }
 .set-bg {
