@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { config } from './config/config';
 
+
 function App() {
 	useEffect(() =>{
 		document.title = "It's time to ditch other radios. | LISTEN.moe";
