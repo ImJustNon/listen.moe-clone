@@ -4,6 +4,7 @@ import thumnail from "../assets/t2.jpg";
 import shigure_ui from "../assets/shigure-ui.gif";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip } from '@chakra-ui/react';
 import donateGif from "../assets/donate.gif";
+import holderImage from "../assets/blank-dark.png";
 
 function Home({ playing, toggle, volume, changeVolume }){
     const [isPlaying, setIsPlaying] = useState(false);
@@ -13,6 +14,11 @@ function Home({ playing, toggle, volume, changeVolume }){
     const [isShowAddFavoriteTip, setIsShowAddFavoriteTip] = useState(false);
     const [isShowPreviousSongsBtn, setIsShowPreviouseSongsBtn] = useState(false);
     const [isShowListenersTip, setIsShowListenersTip] = useState(false);
+    const [wsData, setWsData] = useState({});
+    const [listenersCount, setListenersCount] = useState(0);
+    const [playingSongTitle, setPlayingSongTitle] = useState("");
+    const [playingSongArtists, setPlayingSongArtists] = useState([]);
+    const [playingSongAlbums, setPlayingSongAlbums] = useState([]);
 
     function handleTogglePlayBtn(){
         toggle(!isPlaying);
@@ -26,6 +32,61 @@ function Home({ playing, toggle, volume, changeVolume }){
         setVolumeSliderValue(value);
         changeVolume(value * 0.01);
     }
+
+    useEffect(() =>{
+        let heartbeatInterval;
+        let ws;
+        function heartbeat(interval) {
+            heartbeatInterval = setInterval(() => {
+                ws.send(JSON.stringify({ op: 9 }));
+            }, interval);
+        }
+        function connect() {
+            ws = new WebSocket('wss://listen.moe/gateway_v2');
+            ws.onopen = () => {
+                clearInterval(heartbeatInterval);
+                heartbeatInterval = null;
+                console.log("Connected to Websocket")
+            };
+            ws.onmessage = message => {
+                if (!message.data.length) return;
+                let response;
+                try {
+                    response = JSON.parse(message.data);
+                } catch (error) {
+                    return;
+                }
+                switch (response.op) {
+                    case 0:
+                        ws.send(JSON.stringify({ op: 9 }));
+                        heartbeat(response.d.heartbeat);
+                        break;
+                    case 1:
+                        if (response.t !== 'TRACK_UPDATE' && response.t !== 'TRACK_UPDATE_REQUEST' && response.t !== 'QUEUE_UPDATE' && response.t !== 'NOTIFICATION') break;
+                            console.log(response.d);
+                            setWsData(response.d);
+                            setListenersCount(response.d.listeners);
+                            setPlayingSongTitle(response.d.song.title);
+                            setPlayingSongArtists(response.d.song.artists);
+                            setPlayingSongAlbums(response.d.song.albums);
+                        break;
+                    default:
+                        break;
+                }
+            };
+
+            ws.onclose = error => {
+                clearInterval(heartbeatInterval);
+                heartbeatInterval = null;
+                if (ws) {
+                    ws.close();
+                    ws = null;
+                }
+                setTimeout(() => connect(), 5000);
+            };
+        }
+        connect();
+    }, []);
 
     return (
         <>
@@ -50,12 +111,12 @@ function Home({ playing, toggle, volume, changeVolume }){
                                 <div className='text-white rounded-md shadow-xl bg-[#1d1f2b] w-16 h-16 block justify-center content-center relative py-2 px-4 grow shrink-0 basis-2'>
                                     <div className='w-full overflow-hidden whitespace-nowrap flex text-[#FF015B]'>
                                         <div className='w-auto inline'>
-                                            <a className=''>Sheryl Nome starring May'n</a>
+                                            <a className=''>{playingSongArtists[0]?.name}{playingSongArtists[0]?.nameRomaji ? `(CV. ${playingSongArtists[0]?.nameRomaji})` : ""}</a>
                                         </div>
                                     </div>
                                     <div className='w-full overflow-hidden whitespace-nowrap flex text-[#aab]'>
                                         <div className='w-auto inline'>
-                                            <a className=''>射手座☆午後九時Don't be late [Macross Frontier]</a>
+                                            <a className=''>{playingSongTitle}</a>
                                         </div>
                                     </div>
                                     <img src={shigure_ui} className='top-[-220px] right-[-18px] h-auto max-w-full absolute cursor-pointer hidden xl:flex' />
@@ -81,7 +142,6 @@ function Home({ playing, toggle, volume, changeVolume }){
                                         <div className="absolute min-w-48 top-24 right-0">
                                             <Slider
                                                 focusThumbOnChange={false}
-                                                className=''
                                                 defaultValue={30}
                                                 min={0}
                                                 max={100}
@@ -112,7 +172,7 @@ function Home({ playing, toggle, volume, changeVolume }){
                                 </div>
                                 <div className='w-52 justify-center items-center hidden lg:flex md:ml-8 hover:cursor-pointer'>
                                     <a>
-                                        <img src={thumnail} className='w-auto rounded-lg' />
+                                        <img src={playingSongAlbums[0]?.image ? `https://cdn.listen.moe/covers/${playingSongAlbums[0].image}` : holderImage} className='w-auto rounded-lg' />
                                     </a>
                                 </div>
                             </div>
@@ -121,7 +181,7 @@ function Home({ playing, toggle, volume, changeVolume }){
                                 <div className='grow shrink-0 basis-2 flex flex-row gap-2'>
                                     <div className='text-[#ccd] flex items-center gap-2 pl-4 relative'>
                                         <div className='w-full' onMouseEnter={() => setIsShowListenersTip(true)} onMouseLeave={() => setIsShowListenersTip(false)}>
-                                            <i className="fa-solid fa-headphones-simple"></i> 49
+                                            <i className="fa-solid fa-headphones-simple"></i> {listenersCount}
                                         </div>
                                         {isShowListenersTip ? 
                                             <div className='absolute top-6 right-[-5px]'>
