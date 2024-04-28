@@ -1,18 +1,31 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import thumnail from "../assets/t2.jpg";
 import shigure_ui from "../assets/shigure-ui.gif";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip } from '@chakra-ui/react';
 import donateGif from "../assets/donate.gif";
 
-function Home(){
+function Home({ playing, toggle, volume, changeVolume }){
     const [isPlaying, setIsPlaying] = useState(false);
-    const [volumeSliderValue, setVolumeSliderValue] = useState(50);
+    const [volumeSliderValue, setVolumeSliderValue] = useState(30);
     const [isShowTooltip, setIsShowTooltip] = useState(false);
     const [isShowVolumeSlider, setIsShowVolumeSlider] = useState(false);
     const [isShowAddFavoriteTip, setIsShowAddFavoriteTip] = useState(false);
     const [isShowPreviousSongsBtn, setIsShowPreviouseSongsBtn] = useState(false);
     const [isShowListenersTip, setIsShowListenersTip] = useState(false);
+
+    function handleTogglePlayBtn(){
+        toggle(!isPlaying);
+        setIsPlaying(prev => !prev);
+    }
+    useEffect(() =>{
+        if(isPlaying) changeVolume(volumeSliderValue * 0.01);
+    }, [isPlaying]);
+
+    function handleChangeVolumeSlider(value){
+        setVolumeSliderValue(value);
+        changeVolume(value * 0.01);
+    }
 
     return (
         <>
@@ -27,8 +40,7 @@ function Home(){
                             </svg>
                             {/* Player control */}
                             <div className="flex h-16 flex-row gap-3 items-center justify-center">
-                                
-                                <div className='rounded-md shadow-xl bg-[#1d1f2b] w-16 h-16 flex justify-center items-center text-white hover:text-[#FF015B] hover:cursor-pointer' onClick={() => setIsPlaying(prev => !prev)} >
+                                <div className='rounded-md shadow-xl bg-[#1d1f2b] w-16 h-16 flex justify-center items-center text-white hover:text-[#FF015B] hover:cursor-pointer' onClick={() => handleTogglePlayBtn()} >
                                     {isPlaying ?
                                         <i className="fa-solid fa-pause text-xl"></i>
                                         :
@@ -70,11 +82,11 @@ function Home(){
                                             <Slider
                                                 focusThumbOnChange={false}
                                                 className=''
-                                                defaultValue={100}
+                                                defaultValue={30}
                                                 min={0}
                                                 max={100}
                                                 value={volumeSliderValue}
-                                                onChange={(value) => setVolumeSliderValue(value)}
+                                                onChange={(value) => handleChangeVolumeSlider(value)}
                                                 onMouseEnter={() => setIsShowTooltip(true)}
                                                 onMouseLeave={() => setIsShowTooltip(false)}
                                             >
@@ -86,7 +98,7 @@ function Home(){
                                                     color='white'
                                                     placement={"bottom"}
                                                     isOpen={isShowTooltip}
-                                                    label={String(volumeSliderValue).length < 2 ? "0" + `${volumeSliderValue}` : `${volumeSliderValue}`}
+                                                    label={`${volumeSliderValue}`}
                                                     rounded={5}
                                                 >
                                                     <SliderThumb bg={"#c40447"}/>
