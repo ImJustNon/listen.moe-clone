@@ -9,7 +9,7 @@ import usePlayer from '../components/usePlayer';
 import { config } from '../config/config';
 
 function AppLayout({ children }){
-    const [playing, toggle, volume, changeVolume] = usePlayer("https://raw.githubusercontent.com/ImJustNon/portfolio_assets/main/assets/music/cinderlilla_komisan.mp3");
+    const [playing, toggle, volume, changeVolume] = usePlayer(config.sources.listenMoe_Jpop);
     
     return(
         <>
