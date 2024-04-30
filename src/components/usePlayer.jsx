@@ -1,62 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Howl, Howler } from 'howler';
 import { animateVisualElement } from "framer-motion";
 
 function usePlayer(url) {
-    const [sound, setSound] = useState(null);
-    const [playing, setPlaying] = useState(false);
+    const [audio, setAudio] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(1); // Default volume is 1 (max)
     const [error, setError] = useState(false);
 
+
     useEffect(() => {
-        const newSound = new Howl({
+        const newAudio = new Howl({
             src: [url],
             html5: true, // Force to HTML5 Audio
             volume: volume, // Default volume
             onloaderror: () => setError(true), // Handle loading errors
         });
-        setSound(newSound);
+        setAudio(newAudio);
 
         return () => {
-            newSound.unload();
+            newAudio.unload();
         };
-    }, [url, volume]);
+    }, [url]);
 
-    const toggle = () => setPlaying(!playing);
+    const setPlaying = (value) => setIsPlaying(value);
 
-    const changeVolume = (newVolume) => {
+    const setNewVolume = (newVolume) => {
         if (newVolume >= 0 && newVolume <= 1) {
-            sound.volume(newVolume);
+            audio.volume(newVolume);
             setVolume(newVolume);
         }
     };
 
     useEffect(() => {
-        if (sound) {
-            if (playing) {
-                sound.play();
+        if (audio) {
+            if (isPlaying) {
+                audio.play();
             } else {
-                sound.pause();
+                audio.stop();
             }
         }
-    }, [playing, sound]);
+    }, [isPlaying, audio]);
 
     useEffect(() => {
-        if (sound) {
-            sound.volume(volume); // Update volume when it changes
+        if (audio) {
+            audio.volume(volume); // Update volume when it changes
         }
-    }, [volume, sound]);
+    }, [volume, audio]);
   
     useEffect(() => {
-        if (sound) {
-            sound.on('end', () => setPlaying(false));
+        if (audio) {
+            audio.on('end', () => setIsPlaying(false));
             return () => {
-                sound.off('end', () => setPlaying(false));
+                audio.off('end', () => setIsPlaying(false));
             };
         }
-    }, [sound]);
-  
-    return [playing, toggle, volume, changeVolume, error];
+    }, [audio]);
+    console.log(error);
+    return [isPlaying, setPlaying, volume, setNewVolume, error];
 }
 
 export default usePlayer;

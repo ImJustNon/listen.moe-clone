@@ -6,8 +6,8 @@ import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Toolti
 import donateGif from "../assets/donate.gif";
 import holderImage from "../assets/blank-dark.png";
 
-function Home({ playing, toggle, volume, changeVolume }){
-    const [isPlaying, setIsPlaying] = useState(false);
+function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioError}){
+    // const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(isPlaying);
     const [volumeSliderValue, setVolumeSliderValue] = useState(30);
     const [isShowTooltip, setIsShowTooltip] = useState(false);
     const [isShowVolumeSlider, setIsShowVolumeSlider] = useState(false);
@@ -21,76 +21,28 @@ function Home({ playing, toggle, volume, changeVolume }){
     const [playingSongAlbums, setPlayingSongAlbums] = useState([]);
 
     function handleTogglePlayBtn(){
-        toggle(!isPlaying);
-        setIsPlaying(prev => !prev);
+        setPlaying(!isPlaying);
     }
     useEffect(() =>{
-        if(isPlaying) changeVolume(volumeSliderValue * 0.01);
+        if(isPlaying) setNewVolume(volumeSliderValue * 0.01);
     }, [isPlaying]);
 
     useEffect(() =>{
-        console.log("playing: ", playing);
-    }, [playing]);
+        console.log("playing: ", isPlaying);
+    }, [isPlaying]);
 
     function handleChangeVolumeSlider(value){
         setVolumeSliderValue(value);
-        changeVolume(value * 0.01);
+        setNewVolume(value * 0.01);
     }
 
     useEffect(() =>{
-        let heartbeatInterval;
-        let ws;
-        function heartbeat(interval) {
-            heartbeatInterval = setInterval(() => {
-                ws.send(JSON.stringify({ op: 9 }));
-            }, interval);
-        }
-        function connect() {
-            ws = new WebSocket('wss://listen.moe/gateway_v2');
-            ws.onopen = () => {
-                clearInterval(heartbeatInterval);
-                heartbeatInterval = null;
-                console.log("Connected to Websocket")
-            };
-            ws.onmessage = message => {
-                if (!message.data.length) return;
-                let response;
-                try {
-                    response = JSON.parse(message.data);
-                } catch (error) {
-                    return;
-                }
-                switch (response.op) {
-                    case 0:
-                        ws.send(JSON.stringify({ op: 9 }));
-                        heartbeat(response.d.heartbeat);
-                        break;
-                    case 1:
-                        if (response.t !== 'TRACK_UPDATE' && response.t !== 'TRACK_UPDATE_REQUEST' && response.t !== 'QUEUE_UPDATE' && response.t !== 'NOTIFICATION') break;
-                            console.log(response.d);
-                            setWsData(response.d);
-                            setListenersCount(response.d.listeners);
-                            setPlayingSongTitle(response.d.song.title);
-                            setPlayingSongArtists(response.d.song.artists);
-                            setPlayingSongAlbums(response.d.song.albums);
-                        break;
-                    default:
-                        break;
-                }
-            };
-
-            ws.onclose = error => {
-                clearInterval(heartbeatInterval);
-                heartbeatInterval = null;
-                if (ws) {
-                    ws.close();
-                    ws = null;
-                }
-                setTimeout(() => connect(), 5000);
-            };
-        }
-        connect();
-    }, []);
+        setWsData(wsResponse);
+        setListenersCount(wsResponse.listeners ?? 0);
+        setPlayingSongTitle(wsResponse.song?.title ?? "");
+        setPlayingSongArtists(wsResponse.song?.artists ?? []);
+        setPlayingSongAlbums(wsResponse.song?.albums ?? []);
+    }, [wsResponse]);
 
     return (
         <>
@@ -212,6 +164,8 @@ function Home({ playing, toggle, volume, changeVolume }){
                     <img src={donateGif} className='hidden md:flex' />
                 </a>
             </div>
+
+            
         </>
     );
 }

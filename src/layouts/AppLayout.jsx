@@ -7,9 +7,12 @@ import Home from '../pages/Home';
 import Navbar from '../components/Navbar';
 import usePlayer from '../components/usePlayer';
 import { config } from '../config/config';
+import useListenMoeWebsocket from '../components/useListenMoeWebsocket';
 
 function AppLayout({ children }){
-    const [playing, toggle, volume, changeVolume] = usePlayer(config.sources.listenMoe_Jpop);
+    const [isPlaying, setPlaying, volume, setNewVolume, audioError] = usePlayer(config.sources.listenMoe_Jpop);
+    const [wsResponse] = useListenMoeWebsocket();
+
     
     return(
         <>
@@ -18,10 +21,12 @@ function AppLayout({ children }){
             {/* App Page Chidren */}
             {React.Children.map(children, (child) =>{
                 return React.cloneElement(child, { 
-                    playing: playing,
-                    toggle: toggle,
+                    isPlaying: isPlaying,
+                    setPlaying: setPlaying,
                     volume: volume,
-                    changeVolume: changeVolume
+                    setNewVolume: setNewVolume,
+                    wsResponse: wsResponse,
+                    audioError: audioError,
                 });
             })}     
         </>
