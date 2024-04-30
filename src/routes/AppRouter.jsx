@@ -4,13 +4,13 @@ import Home from "../pages/Home";
 import NotFound from "../pages/NotFound";
 
 
-function AppRouter(){
+function AppRouter({ setThemeBg, themeBg, setCurrentMusicType, currentMusicType }){
     return(
         <Routes>
             <Route 
                 path={'/'} 
                 element={
-                    <AppLayout>
+                    <AppLayout setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType}>
                         <Home />
                     </AppLayout>
                 } 
@@ -18,7 +18,7 @@ function AppRouter(){
             <Route 
                 path={'*'} 
                 element={
-                    <AppLayout>
+                    <AppLayout setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType}>
                         <NotFound />
                     </AppLayout>
                 } 

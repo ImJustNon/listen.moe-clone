@@ -4,9 +4,9 @@ import ListenMoeIcon from "./assets/logo-listenmoe.png";
 import { ChakraProvider } from '@chakra-ui/react'
 import AppRouter from './routes/AppRouter';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { config } from './config/config';
-
+import { getMusicType } from '../utils/musicType';
 
 function App() {
 	useEffect(() =>{
@@ -14,12 +14,22 @@ function App() {
 		const favicon = document.getElementById('favicon');
     	favicon.setAttribute('href', ListenMoeIcon);
 	}, []);
+
+	const [themeBg, setThemeBg] = useState("");
+	const [currentMusicType, setCurrentMusicType] = useState("");
+
+	useEffect(() =>{
+		const getUserLastListenMusicType = getMusicType() ?? "jpop";
+		setThemeBg(getUserLastListenMusicType);
+		setCurrentMusicType(getUserLastListenMusicType);
+	}, []);
+
   	return (
 		<>
 			<ChakraProvider>
-				<ImageBackground />
+				<ImageBackground themeBg={themeBg} />
 				<div className="relative">
-					<AppRouter />
+					<AppRouter setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType} />
 				</div>
 			</ChakraProvider>
 		</>

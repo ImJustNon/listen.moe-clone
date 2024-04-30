@@ -9,14 +9,14 @@ import usePlayer from '../components/usePlayer';
 import { config } from '../config/config';
 import useListenMoeWebsocket from '../components/useListenMoeWebsocket';
 
-function AppLayout({ children }){
+function AppLayout({ children, setThemeBg, themeBg, setCurrentMusicType, currentMusicType }){
     const [isPlaying, setPlaying, volume, setNewVolume, audioError] = usePlayer(config.sources.listenMoe_Jpop);
     const [wsResponse] = useListenMoeWebsocket();
 
     
     return(
         <>
-            <Navbar />
+            <Navbar setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType} />
             {/* <div className="pt-16"></div>        */}
             {/* App Page Chidren */}
             {React.Children.map(children, (child) =>{
