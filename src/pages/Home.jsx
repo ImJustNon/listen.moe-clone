@@ -28,6 +28,10 @@ function Home({ playing, toggle, volume, changeVolume }){
         if(isPlaying) changeVolume(volumeSliderValue * 0.01);
     }, [isPlaying]);
 
+    useEffect(() =>{
+        console.log("playing: ", playing);
+    }, [playing]);
+
     function handleChangeVolumeSlider(value){
         setVolumeSliderValue(value);
         changeVolume(value * 0.01);
