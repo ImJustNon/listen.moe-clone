@@ -1,7 +1,7 @@
 import { Drawer, DrawerBody, DrawerFooter, DrawerHeader, DrawerOverlay, DrawerContent, DrawerCloseButton, Input, Button, Divider } from '@chakra-ui/react';
 import patreonSVG from "../assets/patreon.svg";
 
-function MobileDrawer({ isOpen, onOpen, onClose, currentMusicType, handleSwitchSonge }){
+function MobileDrawer({ isOpen, onOpen, onClose, currentMusicType, handleSwitchSonge, loginModalOnOpen }){
     return (
         <>
             <Drawer
@@ -35,7 +35,7 @@ function MobileDrawer({ isOpen, onOpen, onClose, currentMusicType, handleSwitchS
                                     Discord Bots
                                 </div>
                                 <Divider orientation='horizontal' marginY={"1rem"} borderColor={"rgba(199, 204, 216, .23137)"} />
-                                <div className='text-[#c7ccd8] cursor-pointer'>
+                                <div className='text-[#c7ccd8] cursor-pointer' onClick={() => loginModalOnOpen()}>
                                     Login
                                 </div>
                                 <Divider orientation='horizontal' marginY={"1rem"} borderColor={"rgba(199, 204, 216, .23137)"} />

@@ -6,7 +6,7 @@ import { setMusicType } from "../../utils/musicType";
 import { useState } from "react";
 import MobileDrawer from "./MobileDrawer";
 
-function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, isPlaying, setPlaying }){
+function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, isPlaying, setPlaying, loginModalOnOpen }){
     const navigate = useNavigate();
     
     const mobileDrawerDisclosure = useDisclosure();
@@ -101,13 +101,13 @@ function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, is
                                     }} 
                                 />
                             </div>
-                            <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex">
+                            <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex" onClick={() => loginModalOnOpen()}>
                                 Login
                             </div>
                             <div className="lg:hidden mx-auto items-center hover:cursor-pointer hover:text-white" onClick={() => mobileDrawerOnOpen()}>
                                 <i className="fa-solid fa-bars text-[#ccccdd] fa-lg"></i>
                             </div>
-                            <MobileDrawer isOpen={mobileDrawerIsOpen} onOpen={mobileDrawerOnOpen} onClose={mobileDrawerOnClose} currentMusicType={currentMusicType} handleSwitchSonge={handleSwitchSong} />
+                            <MobileDrawer isOpen={mobileDrawerIsOpen} onOpen={mobileDrawerOnOpen} onClose={mobileDrawerOnClose} currentMusicType={currentMusicType} handleSwitchSonge={handleSwitchSong} loginModalOnOpen={loginModalOnOpen} />
                         </div>
                     </div>
                 </div>
