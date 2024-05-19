@@ -40,6 +40,7 @@ function AppLayout({ children, setThemeBg, themeBg, setCurrentMusicType, current
                     setNewVolume: setNewVolume,
                     wsResponse: wsResponse,
                     audioError: audioError,
+                    currentMusicType: currentMusicType
                 });
             })}     
         </>
