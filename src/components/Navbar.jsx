@@ -5,28 +5,42 @@ import { useNavigate } from "react-router-dom";
 import { setMusicType } from "../../utils/musicType";
 import { useState } from "react";
 
-function Navbar({ setThemeBg, themeBg, currentMusicType, setCurrentMusicType }){
+function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, isPlaying, setPlaying }){
     const navigate = useNavigate();
 
     function handleLink(locationPath){
         navigate(locationPath);
     }
 
-    function handleSetBg(){
+    function handleSwitchSong(){
+        let isPlayingDefault = isPlaying;
+        if(isPlaying){
+            setPlaying(false);
+        }
+         // stop  music before start new source
         if(themeBg === "jpop"){
             setThemeBg("kpop");
-            setMusicType("kpop");
+            setMusicType("kpop"); // set to localstorage
             setCurrentMusicType("kpop");
+            if(isPlayingDefault){
+                setPlaying(true); // continue playing
+            }
         }
         else if(themeBg === "kpop"){
             setThemeBg("jpop");
-            setMusicType("jpop");
+            setMusicType("jpop"); // set to localstorage 
             setCurrentMusicType("jpop");
+            if(isPlayingDefault){
+                setPlaying(true); // continue playing
+            }
         }
         else {
             setThemeBg("jpop");
-            setMusicType("jpop");
+            setMusicType("jpop"); // set to localstorage
             setCurrentMusicType("jpop");
+            if(isPlayingDefault){
+                setPlaying(true); // continue playing
+            }
         }
     }
 
@@ -51,8 +65,9 @@ function Navbar({ setThemeBg, themeBg, currentMusicType, setCurrentMusicType }){
                         <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex" onClick={() => handleLink("/docs")}> 
                             Docs
                         </div>
-                        <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex" onClick={() => handleSetBg()}> 
-                            {currentMusicType.charAt(0).toUpperCase() + "-" + currentMusicType.slice(1)}
+                        <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex" onClick={() => handleSwitchSong()}> 
+                            {/* {currentMusicType.charAt(0).toUpperCase() + "-" + currentMusicType.slice(1)} */}
+                            {currentMusicType === "jpop" ? "K-pop" : "J-pop"}
                         </div>
                         <div className="text-[#ccccdd] font-normal h-full text-[1rem] hover:text-white hover:cursor-pointer px-[0.5rem] lg:px-[1rem]" onClick={() => handleLink("/danate")}>
                             Donate

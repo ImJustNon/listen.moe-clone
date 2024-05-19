@@ -1,13 +1,23 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useEffect } from "react";
 
-const wsEnpoint = {
+const wsEnpointOptions = {
     "jpop": "wss://listen.moe/gateway_v2",
     "kpop": "wss://listen.moe/kpop/gateway_v2"
 }
 
-function useListenMoeWebsocket(){
+function useListenMoeWebsocket({ currentMusicType }){
     const [wsResponse, setWsResponse] = useState({});
+    const [wsEnpoint, setWsEnpoint] = useState(undefined);
+    const wsRef = useRef();
+
+    
+    // watch for when music source has changed
+    useEffect(() =>{
+        setWsEnpoint(wsEnpointOptions[currentMusicType]);    
+        console.log("[Info] Swithed WS to : ", currentMusicType);
+    }, [currentMusicType]);
+
     useEffect(() =>{
         let heartbeatInterval;
         let ws;
@@ -17,11 +27,12 @@ function useListenMoeWebsocket(){
             }, interval);
         }
         function connect() {
-            ws = new WebSocket(wsEnpoint["jpop"]);
+            ws = new WebSocket(wsEnpoint);
+            wsRef.current = ws;
             ws.onopen = () => {
                 clearInterval(heartbeatInterval);
                 heartbeatInterval = null;
-                console.log("Connected to JPOP Websocket")
+                console.log("[Info] WS Connected to : ", wsEnpoint.replace("wss://listen.moe", ""));
             };
             ws.onmessage = message => {
                 if (!message.data.length) return;
@@ -52,6 +63,7 @@ function useListenMoeWebsocket(){
             };
 
             ws.onclose = error => {
+                console.error("[Error] Ws Error : ", error);
                 clearInterval(heartbeatInterval);
                 heartbeatInterval = null;
                 if (ws) {
@@ -61,10 +73,14 @@ function useListenMoeWebsocket(){
                 setTimeout(() => connect(), 5000);
             };
         }
-        connect();
-    }, []);
 
-    return [wsResponse]
+        // wait until "wsEnpoint" is not undifined
+        if(typeof wsEnpoint !== "undefined"){
+            connect();
+        }
+    }, [wsEnpoint]);
+
+    return [wsResponse];
 }
 
 export default useListenMoeWebsocket;

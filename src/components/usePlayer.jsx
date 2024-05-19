@@ -56,7 +56,11 @@ function usePlayer(url) {
             };
         }
     }, [audio]);
-    console.log(error);
+    
+    
+    useEffect(() => {
+        console.error(`[Error] Cannot Load Sound Source : `, error);
+    }, [error]);
     return [isPlaying, setPlaying, volume, setNewVolume, error];
 }
 

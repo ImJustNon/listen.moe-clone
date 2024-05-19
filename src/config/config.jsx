@@ -1,6 +1,9 @@
 export const config = {
     sources: {
-        listenMoe_Jpop: "https://listen.moe/stream",
+        listenmoe: {
+            "jpop": "https://listen.moe/stream",
+            "kpop": "https://listen.moe/kpop/stream",
+        },
         ecq_18k: "https://80.hostpleng.com/api.php?url=http://112.121.151.133:8147/live",
     }
 }

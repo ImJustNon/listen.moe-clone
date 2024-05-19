@@ -8,7 +8,7 @@ import holderImage from "../assets/blank-dark.png";
 
 function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioError}){
     // const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(isPlaying);
-    const [volumeSliderValue, setVolumeSliderValue] = useState(30);
+    const [volumeSliderValue, setVolumeSliderValue] = useState(50);
     const [isShowTooltip, setIsShowTooltip] = useState(false);
     const [isShowVolumeSlider, setIsShowVolumeSlider] = useState(false);
     const [isShowAddFavoriteTip, setIsShowAddFavoriteTip] = useState(false);
@@ -28,7 +28,7 @@ function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioEr
     }, [isPlaying]);
 
     useEffect(() =>{
-        console.log("playing: ", isPlaying);
+        console.log("[Info] Playing : ", isPlaying);
     }, [isPlaying]);
 
     function handleChangeVolumeSlider(value){
