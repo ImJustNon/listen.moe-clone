@@ -8,6 +8,7 @@ import Navbar from '../components/Navbar';
 import usePlayer from '../components/usePlayer';
 import { config } from '../config/config';
 import useListenMoeWebsocket from '../components/useListenMoeWebsocket';
+import LoginModal from '../components/LoginModal';
 
 function AppLayout({ children, setThemeBg, themeBg, setCurrentMusicType, currentMusicType }){
     const [musicSource, setMusicSource] = useState(config.sources.listenmoe["jpop"]);
@@ -23,6 +24,7 @@ function AppLayout({ children, setThemeBg, themeBg, setCurrentMusicType, current
     return(
         <>
             <Navbar setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType} isPlaying={isPlaying} setPlaying={setPlaying} />
+            <LoginModal />
             {/* <div className="pt-16"></div>        */}
             {/* App Page Chidren */}
             {React.Children.map(children, (child) =>{

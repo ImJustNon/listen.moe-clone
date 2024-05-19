@@ -1,13 +1,19 @@
 import { Link } from "react-router-dom";
 import logoImage from "../assets/logo-listenmoe.png";
-import { Input, useStatStyles } from '@chakra-ui/react';
+import { Input, useStatStyles, useDisclosure } from '@chakra-ui/react';
 import { useNavigate } from "react-router-dom";
 import { setMusicType } from "../../utils/musicType";
 import { useState } from "react";
+import MobileDrawer from "./MobileDrawer";
 
 function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, isPlaying, setPlaying }){
     const navigate = useNavigate();
-
+    
+    const mobileDrawerDisclosure = useDisclosure();
+    const mobileDrawerIsOpen = mobileDrawerDisclosure.isOpen;
+    const mobileDrawerOnOpen = mobileDrawerDisclosure.onOpen;
+    const mobileDrawerOnClose = mobileDrawerDisclosure.onClose;
+    
     function handleLink(locationPath){
         navigate(locationPath);
     }
@@ -98,9 +104,10 @@ function Navbar({ themeBg, setThemeBg, currentMusicType, setCurrentMusicType, is
                             <div className="text-[#ccccdd] font-normal h-full px-[1rem] text-[1rem] hover:text-white hover:cursor-pointer hidden lg:flex">
                                 Login
                             </div>
-                            <div className="lg:hidden mx-auto items-center hover:cursor-pointer hover:text-white" onClick={() => console.log("OPEN MODAL")}>
+                            <div className="lg:hidden mx-auto items-center hover:cursor-pointer hover:text-white" onClick={() => mobileDrawerOnOpen()}>
                                 <i className="fa-solid fa-bars text-[#ccccdd] fa-lg"></i>
                             </div>
+                            <MobileDrawer isOpen={mobileDrawerIsOpen} onOpen={mobileDrawerOnOpen} onClose={mobileDrawerOnClose} currentMusicType={currentMusicType} handleSwitchSonge={handleSwitchSong} />
                         </div>
                     </div>
                 </div>

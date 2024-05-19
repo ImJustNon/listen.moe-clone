@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { config } from './config/config';
 import { getMusicType } from '../utils/musicType';
+import theme from './theme';
 
 function App() {
 	useEffect(() =>{
@@ -26,7 +27,7 @@ function App() {
 
   	return (
 		<>
-			<ChakraProvider>
+			<ChakraProvider theme={theme}>
 				<ImageBackground themeBg={themeBg} />
 				<div className="relative">
 					<AppRouter setThemeBg={setThemeBg} themeBg={themeBg} setCurrentMusicType={setCurrentMusicType} currentMusicType={currentMusicType} />
