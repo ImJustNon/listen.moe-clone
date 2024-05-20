@@ -1,7 +1,7 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import thumnail from "../assets/t2.jpg";
-import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip } from '@chakra-ui/react';
+import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip, useToast } from '@chakra-ui/react';
 import donateGif from "../assets/donate.gif";
 import holderImage from "../assets/blank-dark.png";
 import characterShigure_ui from "../assets/shigure-ui.gif";
@@ -39,6 +39,8 @@ const characters = [
 
 function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioError, currentMusicType}){
     // const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(isPlaying);
+    const toast = useToast();
+    const toastIdRef = useRef();
     const [volumeSliderValue, setVolumeSliderValue] = useState(50);
     const [isShowTooltip, setIsShowTooltip] = useState(false);
     const [isShowVolumeSlider, setIsShowVolumeSlider] = useState(false);
@@ -54,6 +56,15 @@ function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioEr
 
     function handleTogglePlayBtn(){
         setPlaying(!isPlaying);
+        if(!isPlaying){ // show toast notification
+            toast({
+                title: `Loading...`,
+                status: "loading",
+                position: "bottom-right",
+                isClosable: true,
+                duration: 5000
+            });
+        }
     }
     useEffect(() =>{
         if(isPlaying) setNewVolume(volumeSliderValue * 0.01);
