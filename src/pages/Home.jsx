@@ -1,10 +1,41 @@
 import { Button, ButtonGroup } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import thumnail from "../assets/t2.jpg";
-import shigure_ui from "../assets/shigure-ui.gif";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark, Tooltip } from '@chakra-ui/react';
 import donateGif from "../assets/donate.gif";
 import holderImage from "../assets/blank-dark.png";
+import characterShigure_ui from "../assets/shigure-ui.gif";
+import characterPlatelet from "../assets/platelet.png";
+import characterTomori from "../assets/tomori.png";
+import characterKanna from "../assets/kanna.gif";
+import { getCharacter, setCharacter } from '../../utils/charater';
+
+const characters = [
+    {
+        id: 1,
+        name: "shigure_ui",
+        src: characterShigure_ui,
+        className: "top-[-220px] right-[-18px] h-auto w-auto",
+    },
+    {
+        id: 2,
+        name: "platelet",
+        src: characterPlatelet,
+        className: "top-[-175px] right-0 w-[126px] h-[235px]",
+    },
+    {
+        id: 3,
+        name: "tomori",
+        src: characterTomori,
+        className: "top-[-195px] right-0 h-auto w-auto",
+    },
+    {
+        id: 4,
+        name: "kanna",
+        src: characterKanna,
+        className: "top-[-196px] right-[-25px] h-auto w-auto",
+    }
+];
 
 function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioError, currentMusicType}){
     // const [isCurrentlyPlaying, setIsCurrentlyPlaying] = useState(isPlaying);
@@ -19,6 +50,7 @@ function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioEr
     const [playingSongTitle, setPlayingSongTitle] = useState("");
     const [playingSongArtists, setPlayingSongArtists] = useState([]);
     const [playingSongAlbums, setPlayingSongAlbums] = useState([]);
+    const [currentCharacter, setCurrentCharacter] = useState({});
 
     function handleTogglePlayBtn(){
         setPlaying(!isPlaying);
@@ -43,6 +75,17 @@ function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioEr
         setPlayingSongArtists(wsResponse.song?.artists ?? []);
         setPlayingSongAlbums(wsResponse.song?.albums ?? []);
     }, [wsResponse]);
+
+    function handleSwitchCharater(){
+        const findIndex = characters.findIndex(character => character.id === currentCharacter.id);
+        const getIndex = findIndex + 1 < characters.length ? findIndex + 1 : 0;
+        setCurrentCharacter(characters[getIndex]);
+        setCharacter(getIndex);
+    }
+    useEffect(() =>{
+        const getCharacterLocal = getCharacter();
+        setCurrentCharacter(characters[getCharacterLocal ?? 0]);
+    }, []);
 
     return (
         <>
@@ -75,7 +118,7 @@ function Home({ isPlaying, setPlaying, volume, setNewVolume, wsResponse, audioEr
                                             <a className=''>{playingSongTitle}</a>
                                         </div>
                                     </div>
-                                    <img src={shigure_ui} className='top-[-220px] right-[-18px] h-auto max-w-full absolute cursor-pointer hidden xl:flex' />
+                                    <img src={currentCharacter?.src} className={`${currentCharacter?.className} max-w-full absolute cursor-pointer hidden xl:flex`} onClick={() => handleSwitchCharater()} />
                                 </div>
                                 <div className='rounded-md shadow-xl bg-[#1d1f2b] w-16 h-16 flex relative' >
                                     <div className={`w-full flex justify-center items-center text-white hover:${currentMusicType === "jpop" ? "text-[#FF015B]" : "text-[#30A9ED]"} hover:cursor-pointer`} onMouseEnter={() => setIsShowAddFavoriteTip(true)} onMouseLeave={() => setIsShowAddFavoriteTip(false)}>
